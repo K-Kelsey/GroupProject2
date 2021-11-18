@@ -10,6 +10,7 @@ body {
 #test {
   margin-left: 10px;
 }
+
 .actor-filter {
   background-color: white;
   width: 200px;
@@ -19,6 +20,7 @@ body {
   padding-left: 20px;
   padding-right: 0px;
 }
+
 .chip {
   margin-right: 0px !important;
 }
@@ -40,31 +42,42 @@ body {
 #actorsId{
 margin-left: 10px;
 }
+
 /* Results Card design */
 .card-action {
 padding: 5px 25px !important;
 }
+
 .card-image{
-  max-width: 115px;
+  max-width: 150px;
   float: left;
-  padding:10px 10px 10px 0px;
+  padding:40px 10px 10px 0px;
+  text-align: center;
+
 } 
 .card-image .card-content{
 display: inline-block;
 }
+
 .card-content {
 padding: 15px 25px 10px 5px !important;
-margin-left: 10px;
+margin-left: 150px;
 color: white;
 }
+
+#favBtn {
+  color: #000;
+  font-size: 15px;
+}
+
 #results-card-holder {
 margin-left: 25px;
 width: 90%;
 }
 /* Set additional styling options for the columns*/
 .column-1 {
-  width: 25%;
-  border-right: 1px solid #000;
+width: 25%;
+border-right: 1px solid #000;
 display: inline-table;
 padding-bottom: 35%;
 }

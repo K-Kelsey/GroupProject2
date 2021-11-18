@@ -1,0 +1,25 @@
+<script id='resultsTemplate'  type="text/x-handlebars-template" >
+        <div class="container, left-align">
+        <div class="col s12 m6 hoverable"  id="results-card-holder" style="background-color: #006064;">
+            <div class="card-horizontal" style="background-color:#006064;">
+              <div class="card-image-holder" id="poster-image" >
+                \{{#if poster_path}}
+                <img class="card-image" src= "https://image.tmdb.org/t/p/w500/\{{poster_path}}">
+                \{{else}}
+                <img class="card-image" src="./assets/pictures/noPoster.jpg">
+                \{{/if}}
+              </div>
+              <div class="card-stacked">
+                <div class="card-content">
+                  <h4 id="movies-title"> \{{original_title}} </h4>
+                  <div id="year"> \{{release_date}}</div>
+                  <p id="overview"> \{{overview}}</p>
+                  <button class="material-icons" id="favBtn" type="button" onclick="favBtnColor()">favorite</button>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</script>
