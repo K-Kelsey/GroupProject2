@@ -1,21 +1,3 @@
-/*
-Sample appData:
-appData = {
-    actorFilters: [
-        {
-            id: 234,
-            name: 'john travolta'
-        }
-    ],
-    commonMovieIds: [3, 5],
-    searchResults: {
-        actorId: {
-            actorName: 456,
-            movieIds: [1, 3, 5]
-        }
-    }
-}
-*/
 
 // Global Variables
 const apiKey = '67ef4e4a60b4acfa5458eea4807a1de1';
@@ -350,55 +332,34 @@ function showResults() {
                 if (!data.release_date) {
                     movieData[2] = data.status;
                 }
-
-                console.log(data.status);
-
+                // console.log(data.status);
                 // let directorName = ;
-                createCard(movieData);
+                // createCard(movieData);
+                createCard2(movieUrl);
                 // console.log(data);
             });
     }
-
 }
 
-function createCard(movieData) {
-    let imgUrl = movieData[0];
-    let movieTitle = movieData[1];
-    let movieYear = movieData[2];
-    // let directorName = ;
+function createCard2(movieUrl) {
+    var ourRequest = new XMLHttpRequest(movieUrl);
+         ourRequest.open('GET', movieUrl)
+         ourRequest.send();
+         ourRequest.onload = function() {
+             if(ourRequest.status >= 200 && ourRequest.status < 400) {
+                 var movieData = JSON.parse(ourRequest.responseText);
+                //  console.log(movieData)
+                 createHTML(movieData);
+             } else {
+                 console.log("We connected to the server, but it returned an error.");
+             }
+         };     
+ };
 
-    let containerDiv = resultsCol.appendChild(document.createElement("div"));
-    containerDiv.setAttribute("class", "container, left-align");
-
-    let hoverDiv = containerDiv.appendChild(document.createElement("div"));
-    hoverDiv.setAttribute("class", "col s12 m6 hoverable");
-    hoverDiv.setAttribute("id", "results-card-holder");
-
-    let cardHorizDiv = hoverDiv.appendChild(document.createElement("div"));
-    cardHorizDiv.setAttribute("class", "card-horizontal");
-
-    let cardImageDiv = cardHorizDiv.appendChild(document.createElement("div"));
-    cardImageDiv.setAttribute("class", "card-image-holder");
-    cardImageDiv.setAttribute("id", "poster-image");
-
-    let posterImg = cardImageDiv.appendChild(document.createElement("img"));
-    posterImg.setAttribute("class", "card-image");
-    posterImg.setAttribute("src", imgUrl);
-
-    let cardStackedDiv = cardHorizDiv.appendChild(document.createElement("div"));
-    cardStackedDiv.setAttribute("class", "card-stacked");
-
-    let cardContentDiv = cardStackedDiv.appendChild(document.createElement("div"));
-    cardContentDiv.setAttribute("class", "card-content");
-
-    let movieTitleDiv = cardContentDiv.appendChild(document.createElement("h4"));
-    movieTitleDiv.setAttribute("id", "movies-title");
-    movieTitleDiv.textContent = movieTitle;
-
-    let movieYearDiv = cardContentDiv.appendChild(document.createElement("div"));
-    movieYearDiv.setAttribute("id", "year");
-    movieYearDiv.textContent = "(" + movieYear + ")";
-
-    let directorNameDiv = cardContentDiv.appendChild(document.createElement("div"));
-    directorNameDiv.setAttribute("id", "director");
+function createHTML(movieData) {
+    var resultsTemplate = document.getElementById("resultsTemplate").innerHTML ;
+    var compiledTemplate = Handlebars.compile(resultsTemplate);
+    var ourGeneratedHTML = compiledTemplate (movieData); 
+    var rawContiner = document.getElementById("resultsCol");
+    rawContiner.innerHTML = ourGeneratedHTML + rawContiner.innerHTML;
 }

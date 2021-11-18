@@ -2,17 +2,18 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const Users = require('../../models/Users');
 
+
 // Return the signup/login form
 router.get('/getLoginForm', (req, res) => {
   if (req.session && req.session.loggedIn) {
     console.log('session exists')
     res.status(200).send('session exists, about to redirect ...')
-    // res.redirect('/'); // Is this right?
-    // return;
+    res.redirect('/'); // Is this right?
+    return;
   } else {
     console.log('session NOT exists')
     res.status(500).send('session NOT exists, about to return login form')
-    // res.render('login');
+    res.render('login');
   }
 });
 
@@ -28,39 +29,48 @@ router.post('/signUp', async (req, res) => {
     req.session.save(() => {
       req.session.loggedIn = true;
       res.status(200).json(userData);
+      console.log("router post signUP worked")
     });
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
+    console.log("router post signUP did NOT work")
   }
 });
 
 // Login a user who already has an account.
 router.post('/login', async (req, res) => {
+  // console.log('now in /login')
   console.log('now in /login', req.body.username)
 
   try {
     const dbUserData = await Users.findOne({
       where: { username: req.body.username },
+
     });
+    console.log("TRY REQUEST WORKED")
     if (!dbUserData) {
       res.status(400).json({ message: 'Incorrect username. Please try again!' });
+      console.log("NO USERNAME")
       return;
     }
     const validPassword = await dbUserData.checkPassword(req.body.password);
 
     if (!validPassword) {
       res.status(400).json({ message: 'Incorrect email or password. Please try again!' });
+      console.log("NO PASSWORD")
       return;
     }
     req.session.save(() => {
       req.session.loggedIn = true;
       req.session.userId = dbUserData.id;
       res.status(200).json({ user: dbUserData, message: 'You are now logged in!' });
+      console.log("router post login worked")
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json(err);     
+    console.log("router post login did NOT worked")
   }
 });
 
@@ -68,11 +78,16 @@ router.post('/login', async (req, res) => {
 router.post('/logout', (req, res) => {
   console.log('now in /logout')
   if (req.session.loggedIn) {
+    console.log("pre dead")
     req.session.destroy(() => {
+      console.log("post dead")
       res.status(204).end();
+      console.log("Session Destroyed")
     });
   } else {
+    console.log("wut")
     res.status(404).end();
+    console.log("Session not Destroyed")
   }
 });
 
@@ -107,35 +122,7 @@ router.get('/bio', async (req, res) => {
 });
 
 // Add favorite for user.
-router.put('/favorites', async (req, res) => {
-  try {
-    const user = await Users.findByPk(req.session.userId);
-    
-    const incomingFavorite = req.body.newFavorite;
-    const existingFavorites = user.favorites;
-    const newFavorites = existingFavorites + ',' + incomingFavorite;
-
-    user.favorites = newFavorites;
-    console.log('user.favorites:', user.favorites)
-    await user.save();
-    res.status(200).send(user.favorites);
-  } catch (error) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-});
-
-
 
 // GetFavorites of user.
-router.get('/favorites', async (req, res) => {
-  try {
-      const user = await Users.findByPk(req.session.userId);
-      res.status(200).json(user.favorites);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-});
 
 module.exports = router;
